@@ -63,38 +63,31 @@ class MainActivity : AppCompatActivity() {
 
     fun getResponseTime() {
 
-        var urls: HashMap< EditText,String> = HashMap()
-        urls[et_1!!] =getUrl(et_1!!)
-        urls[et_2!!] =getUrl(et_2!!)
-        urls[et_3!!] =getUrl(et_3!!)
-        urls[et_4!!] =getUrl(et_4!!)
-        urls[et_5!!] =getUrl(et_5!!)
-        urls[et_6!!] =getUrl(et_6!!)
-        urls[et_7!!] =getUrl(et_7!!)
-        urls[et_8!!] =getUrl(et_8!!)
-        urls[et_9!!] =getUrl(et_9!!)
-        urls[et_10!!] =getUrl(et_10!!)
+        var urls: HashMap<EditText, String> = HashMap()
+        urls[et_1!!] = getUrl(et_1!!)
+        urls[et_2!!] = getUrl(et_2!!)
+        urls[et_3!!] = getUrl(et_3!!)
+        urls[et_4!!] = getUrl(et_4!!)
+        urls[et_5!!] = getUrl(et_5!!)
+        urls[et_6!!] = getUrl(et_6!!)
+        urls[et_7!!] = getUrl(et_7!!)
+        urls[et_8!!] = getUrl(et_8!!)
+        urls[et_9!!] = getUrl(et_9!!)
+        urls[et_10!!] = getUrl(et_10!!)
 
 
-        GlobalScope.launch {
-            urls.forEach{
-                Log.i("getResponseTime","111")
+        GlobalScope.launch(Dispatchers.Main) {
+            urls.forEach {
+                Log.i("getResponseTime", "111")
+                var time: Long = 0
                 withContext(Dispatchers.IO) {
-                    val time = sendRequestGetResponse(it.value, it.key)
+                    time = sendRequestGetResponse(it.value, it.key)
 
-                    if (time>0){
-                        Handler(Looper.getMainLooper()).post(
-                            Runnable {
-                                it.key.setText("${it.value}的响应时间是:${time}")
-                            }
-                        )
-                    }else{
-                        Handler(Looper.getMainLooper()).post(
-                            Runnable {
-                                it.key.setText("${it.key.text}:该url地址有误")
-                            }
-                        )
-                    }
+                }
+                if (time > 0) {
+                    it.key.setText("${it.value}的响应时间是:${time}")
+                } else {
+                    it.key.setText("${it.key.text}:该url地址有误")
                 }
             }
         }
@@ -111,14 +104,14 @@ class MainActivity : AppCompatActivity() {
         var start: Long = System.currentTimeMillis()
         connection.connect()
         var end: Long = System.currentTimeMillis()
-        return end-start
+        return end - start
 
     }
 
 
     fun getUrl(et: EditText): String {
 
-        if (et.text==null||et.text.isEmpty()) {
+        if (et.text == null || et.text.isEmpty()) {
             return url
         } else {
             if (et.text.matches(Regex(regex_url))) {
